@@ -5,7 +5,7 @@ Tampilan endpoint
 ![alt text](<endpoint check-in.png>)
 
 Tampilan Database
-![alt text](<database.png>)
+![alt text](databasee.png)
 
 Tampilan halaman presensi Check-in berhasil dengan menampilkan maps OSM (Admin)
 ![alt text](<TampilanCheckin.png>)
