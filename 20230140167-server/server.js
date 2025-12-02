@@ -11,6 +11,8 @@ const reportRoutes = require("./routes/reports");
 //Impor rute auth
 const authRoutes = require('./routes/auth');
 
+
+
 // Middleware
 app.use(cors());
 app.use(express.json());

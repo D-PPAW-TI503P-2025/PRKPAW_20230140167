@@ -9,6 +9,7 @@
  	  try {
  	    const { id: userId, nama: userName } = req.user;
  	    const waktuSekarang = new Date();
+		const { latitude, longitude } = req.body; 
  	
  	    // 3. Ubah cara mencari data menggunakan 'findOne' dari Sequelize
  	    const existingRecord = await Presensi.findOne({
@@ -24,8 +25,10 @@
  	    // 4. Ubah cara membuat data baru menggunakan 'create' dari Sequelize
  	    const newRecord = await Presensi.create({
  	      userId: userId,
- 	      nama: userName,
  	      checkIn: waktuSekarang,
+		  latitude: latitude || null, // <-- Simpan ke database
+		  longitude: longitude || null, // <-- Simpan ke database
+
  	    });
  	    
  	    const formattedData = {
