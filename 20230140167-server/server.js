@@ -10,6 +10,7 @@ const reportRoutes = require("./routes/reports");
 
 //Impor rute auth
 const authRoutes = require('./routes/auth');
+const path = require("path");
 
 
 
@@ -30,6 +31,7 @@ app.use("/api/presensi", presensiRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/auth", authRoutes); //Daftarkan rute/api/auth
 
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.listen(PORT, () => {
   console.log(`Express server running at http://localhost:${PORT}/`);

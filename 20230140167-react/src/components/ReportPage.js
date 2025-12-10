@@ -7,6 +7,7 @@ function ReportPage() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null); // ✅ TAMBAHAN
 
   const fetchReports = async (query) => {
     const token = localStorage.getItem("token");
@@ -39,6 +40,7 @@ function ReportPage() {
   useEffect(() => {
     fetchReports("");
   }, [navigate]);
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     fetchReports(searchTerm);
@@ -56,11 +58,11 @@ function ReportPage() {
           placeholder="Cari berdasarkan nama..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          className="flex-grow px-3 py-2 border border-gray-300 rounded-md"
         />
         <button
           type="submit"
-          className="py-2 px-4 bg-blue-600 text-white font-semibold rounded-md shadow-sm hover:bg-blue-700"
+          className="py-2 px-4 bg-blue-600 text-white rounded-md"
         >
           Cari
         </button>
@@ -75,62 +77,95 @@ function ReportPage() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Nama
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Check-In
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Check-Out
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Latitude
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Longitude
-                </th>
+                <th className="px-6 py-3">Nama</th>
+                <th className="px-6 py-3">Check-In</th>
+                <th className="px-6 py-3">Check-Out</th>
+                <th className="px-6 py-3">Latitude</th>
+                <th className="px-6 py-3">Longitude</th>
+                <th className="px-6 py-3">Bukti Foto</th> {/* ✅ TAMBAHAN */}
               </tr>
             </thead>
+
             <tbody className="bg-white divide-y divide-gray-200">
               {reports.length > 0 ? (
-                reports.map((presensi) => (
-                  <tr key={presensi.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {presensi.user ? presensi.user.nama : "N/A"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(presensi.checkIn).toLocaleString("id-ID", {
-                        timeZone: "Asia/Jakarta",
-                      })}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {presensi.checkOut
-                        ? new Date(presensi.checkOut).toLocaleString("id-ID", {
-                            timeZone: "Asia/Jakarta",
-                          })
-                        : "Belum Check-Out"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {presensi.latitude || "N/A"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {presensi.longitude || "N/A"}
-                    </td>
-                  </tr>
-                ))
+                reports.map((presensi) => {
+                  const fotoPath = presensi.buktiFoto
+                    ? presensi.buktiFoto.replace(/\\/g, "/")
+                    : null;
+
+                  const fotoUrl = fotoPath
+                    ? `http://localhost:5000/${fotoPath}`
+                    : null;
+
+                  return (
+                    <tr key={presensi.id}>
+                      <td className="px-6 py-4">
+                        {presensi.user ? presensi.user.nama : "N/A"}
+                      </td>
+
+                      <td className="px-6 py-4">
+                        {new Date(presensi.checkIn).toLocaleString("id-ID", {
+                          timeZone: "Asia/Jakarta",
+                        })}
+                      </td>
+
+                      <td className="px-6 py-4">
+                        {presensi.checkOut
+                          ? new Date(presensi.checkOut).toLocaleString(
+                              "id-ID",
+                              { timeZone: "Asia/Jakarta" }
+                            )
+                          : "Belum Check-Out"}
+                      </td>
+
+                      <td className="px-6 py-4">
+                        {presensi.latitude || "N/A"}
+                      </td>
+
+                      <td className="px-6 py-4">
+                        {presensi.longitude || "N/A"}
+                      </td>
+
+                      {/* ✅ BUKTI FOTO */}
+                      <td className="px-6 py-4">
+                        {fotoUrl ? (
+                          <img
+                            src={fotoUrl}
+                            alt="Bukti Foto"
+                            className="w-12 h-12 object-cover rounded cursor-pointer border"
+                            onClick={() => setSelectedImage(fotoUrl)}
+                          />
+                        ) : (
+                          "Tidak ada foto"
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
-                  <td
-                    colSpan="3"
-                    className="px-6 py-4 text-center text-gray-500"
-                  >
+                  <td colSpan="6" className="text-center p-4 text-gray-500">
                     Tidak ada data yang ditemukan.
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* ✅ MODAL FOTO */}
+      {selectedImage && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+          onClick={() => setSelectedImage(null)}
+        >
+          <img
+            src={selectedImage}
+            alt="Foto Presensi"
+            className="max-w-[90%] max-h-[90%] rounded shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          />
         </div>
       )}
     </div>
