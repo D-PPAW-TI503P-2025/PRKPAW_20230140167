@@ -60,6 +60,8 @@ function Navbar() {
               Dashboard
             </Link>
 
+            <Link to="/monitoring" className="...">Monitoring Suhu</Link>
+
             <Link
               to="/attendance"
               className={`px-6 py-2.5 rounded-full font-medium transition-all ${
@@ -144,6 +146,7 @@ function Navbar() {
                 isActive("/attendance") ? activeClass : "text-gray-700"
               }`}
             >
+
               Presensi
             </Link>
             {user.role === "admin" && (
@@ -156,6 +159,10 @@ function Navbar() {
               >
                 Laporan Admin
               </Link>
+
+              
+
+
             )}
 
             <button

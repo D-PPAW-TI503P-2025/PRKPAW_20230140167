@@ -8,6 +8,7 @@ import ReportPage from "./components/ReportPage";
 import Navbar from "./components/Navbar";
 import "leaflet/dist/leaflet.css";
 
+
 const MainLayout = ({ children }) => {
   return (
     <div>
@@ -32,6 +33,7 @@ function App() {
               </MainLayout>
             }
           />
+
           <Route
             path="/attendance"
             element={
@@ -49,6 +51,7 @@ function App() {
             }
           />
           <Route path="/" element={<LoginPage />} />
+          <Route path="/monitoring" element={<SensorPage />} />
         </Routes>
       </div>
     </Router>
